@@ -23,10 +23,19 @@ public class FracCalc {
     //        
     // The function should return the result of the fraction after it has been calculated
     //      e.g. return ==> "1_1/4"
-    public static String produceAnswer(String input)
-    {
-        Scanner scan = new Scanner(System.in);
-        // TODO: Implement this function to produce the solution to the input
+    public static String firstFrac(String input) {
+        int count = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.substring(i,i+1).equals(" ")) {
+                count++;
+            }
+            if (count == 1) {
+                input = input.substring(0,i);
+            }
+        }
+        return input;
+    }
+    public static String secondFrac(String input) {
         int count = 0;
         for (int i = 0; i < input.length(); i++) {
             if (input.substring(i,i+1).equals(" ")) {
@@ -36,6 +45,21 @@ public class FracCalc {
                 input = input.substring(i+1);
             }
         }
+        return input;
+    }
+    public static String returnOperator(String input) {
+        int count = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.substring(i,i+1).equals(" ")) {
+                count++;
+            }
+            if (count == 1) {
+                input = input.substring(i+1,i+2);
+            }
+        }
+        return input;
+    }
+    public static String breakFrac(String input) {
         String whole = "0";
         String numerator = "0";
         String denominator = "0";
@@ -49,7 +73,7 @@ public class FracCalc {
                 underscoreCount++;
                 i = input.length() - 1;
             }
-            if (input.substring(i,i+1).equals("/")) {
+            if (input.substring(i,i+1).equals("/") && underscoreCount == 0) {
                 numerator = input.substring(0,i);
                 denominator = input.substring(i+1);
                 backslashCount++;
@@ -58,8 +82,63 @@ public class FracCalc {
         if (underscoreCount == 0 && backslashCount == 0) {
             whole = input;
             denominator = "1";
+        }
+        if (Integer.parseInt(whole) < 0) {
+            numerator = "-" + numerator;
+        }
+        return whole + "," + numerator  + "," + denominator;
     }
-        return "whole:" + whole + " numerator:" + numerator + " denominator:" + denominator;
+    public static String computeFrac(String input, String returnValue) {
+        String firstWhole;
+        String firstNumer;
+        String firstDenom;
+        String secondWhole;
+        String secondNumer;
+        String secondDenom;
+        String firstFrac = breakFrac(firstFrac(input));
+        Scanner scan = new Scanner(firstFrac);
+        scan.useDelimiter(",");
+        firstWhole = scan.next();
+        firstNumer = scan.next();
+        firstDenom = scan.next();
+        String secondFrac = breakFrac(secondFrac(input));
+        scan = new Scanner(secondFrac);
+        scan.useDelimiter(",");
+        secondWhole = scan.next();
+        secondNumer = scan.next();
+        secondDenom = scan.next();
+        String operator = returnOperator(input);
+        firstNumer = Integer.toString(Integer.parseInt(firstNumer) + (Integer.parseInt(firstWhole)*Integer.parseInt(firstDenom)));
+        secondNumer = Integer.toString(Integer.parseInt(secondNumer) + (Integer.parseInt(secondWhole)*Integer.parseInt(secondDenom)));
+
+        firstNumer = Integer.toString(Integer.parseInt(firstNumer)*Integer.parseInt(secondDenom));
+        secondNumer = Integer.toString(Integer.parseInt(secondNumer)*Integer.parseInt(firstDenom));
+        firstDenom = Integer.toString(Integer.parseInt(firstDenom)*Integer.parseInt(secondDenom));
+        secondDenom = firstDenom;
+        if (operator.equals("+")) {
+            returnValue = Integer.toString(Integer.parseInt(firstNumer) + Integer.parseInt(secondNumer));
+            returnValue = returnValue  + "/" + firstDenom;
+        } else if (operator.equals("-")) {
+            returnValue = Integer.toString(Integer.parseInt(firstNumer) - Integer.parseInt(secondNumer));
+            returnValue = returnValue  + "/" + firstDenom;
+        } else if (operator.equals("*")) {
+            returnValue = Integer.toString(Integer.parseInt(firstNumer) * Integer.parseInt(secondNumer));
+            firstDenom = Integer.toString(Integer.parseInt(firstDenom) * Integer.parseInt(firstDenom));
+            returnValue = returnValue  + "/" + firstDenom;
+        } else {
+            returnValue = Integer.toString(Integer.parseInt(firstNumer)*Integer.parseInt(secondDenom));
+            secondDenom = Integer.toString(Integer.parseInt(secondNumer) * Integer.parseInt(firstDenom));
+            returnValue = returnValue + "/" + secondDenom;
+        }
+        return returnValue;
+    }
+    public static String produceAnswer(String input)
+    {
+        // TODO: Implement this function to produce the solution to the input
+        String returnValue = "";
+        returnValue = computeFrac(input,returnValue);
+        return returnValue;
+
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
