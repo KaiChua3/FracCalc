@@ -43,6 +43,7 @@ public class FracCalc {
             }
             if (count == 2) {
                 input = input.substring(i+1);
+                i = input.length() - 1;
             }
         }
         return input;
@@ -67,11 +68,10 @@ public class FracCalc {
         int underscoreCount = 0;
         for (int i = 0; i < input.length(); i++) {
             if (input.substring(i,i+1).equals("_")) {
-                whole = input.substring(0,i);
-                numerator = input.substring(i+1,input.indexOf("/"));
+                whole = input.substring(0,input.indexOf("_"));
+                numerator = input.substring(input.indexOf("_") + 1,input.indexOf("/"));
                 denominator = input.substring(input.indexOf("/") + 1);
                 underscoreCount++;
-                i = input.length() - 1;
             }
             if (input.substring(i,i+1).equals("/") && underscoreCount == 0) {
                 numerator = input.substring(0,i);
@@ -86,9 +86,11 @@ public class FracCalc {
         if (Integer.parseInt(whole) < 0) {
             numerator = "-" + numerator;
         }
+
         return whole + "," + numerator  + "," + denominator;
     }
-    public static String computeFrac(String input, String returnValue) {
+    public static String computeFrac(String input) {
+        String returnValue = "";
         String firstWhole;
         String firstNumer;
         String firstDenom;
@@ -136,7 +138,7 @@ public class FracCalc {
     {
         // TODO: Implement this function to produce the solution to the input
         String returnValue = "";
-        returnValue = computeFrac(input,returnValue);
+        returnValue = computeFrac(input);
         return returnValue;
 
     }
